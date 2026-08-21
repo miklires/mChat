@@ -1,0 +1,93 @@
+config-version: 1
+
+language:
+  default: en_US
+
+channels:
+  local:
+    format: "<color:#7CB342>[L]</color> <prefix><player><dark_gray>:</dark_gray> <message>"
+    radius: 50
+    permission-read: "mchat.channel.local.read"
+    permission-write: "mchat.channel.local.write"
+    default: true
+    cooldown-seconds: 2
+    prefix-char: ""
+    cross-server: false
+    log: true
+  global:
+    format: "<gold>[G]</gold> <prefix><player><dark_gray>:</dark_gray> <message>"
+    radius: 0
+    permission-read: "mchat.channel.global.read"
+    permission-write: "mchat.channel.global.write"
+    default: false
+    cooldown-seconds: 3
+    prefix-char: "!"
+    cross-server: false
+    log: true
+  staff:
+    format: "<red>[Staff]</red> <prefix><player><dark_gray>:</dark_gray> <message>"
+    radius: 0
+    permission-read: "mchat.channel.staff.read"
+    permission-write: "mchat.channel.staff.write"
+    default: false
+    cooldown-seconds: 1
+    prefix-char: "#"
+    cross-server: false
+    log: true
+
+anti-spam:
+  block-duplicates: true
+
+private:
+  format-sender: "<gray>[<dark_gray>you<gray>→<dark_aqua><target><gray>] <white><message>"
+  format-target: "<gray>[<dark_aqua><sender><gray>→<dark_gray>you<gray>] <white><message>"
+
+mention:
+  enabled: true
+  symbol: "@"
+  highlight: "<aqua><b>"
+  highlight-end: "</b></aqua>"
+  sound: "BLOCK_NOTE_BLOCK_PLING"
+  sound-volume: 0.5
+  sound-pitch: 1.5
+
+join:
+  enabled: true
+  wait-for-auth: true
+  message: "<color:#7CB342>+ <white><player></white></color> <click:suggest_command:'Привет, <player>! '><gray>[<aqua>✋ Поприветствовать</aqua>]</gray></click>"
+
+quit:
+  enabled: true
+  message: "<red>- <white><player></white></red>"
+
+tags:
+  xp: "<aqua><level></aqua> ур."
+  xyz: "<yellow><world></yellow> <gold><x>, <y>, <z></gold>"
+  item-empty: "<gray>пустая рука</gray>"
+  item-format: "<hover:show_item:'<material>':<amount>:'<nbt>'><yellow>[<name>]</yellow></hover>"
+  inventory: "<click:run_command:'/mchat-inv <id>'><dark_aqua><u>[Инвентарь]</u></dark_aqua></click>"
+  online: "<green><online>/<max></green>"
+  ping: "<color><ping></color> мс"
+  tps: "<color><tps></color>"
+  ping-good: "<green>"
+  ping-mid: "<yellow>"
+  ping-bad: "<red>"
+  tps-good: "<green>"
+  tps-mid: "<yellow>"
+  tps-bad: "<red>"
+
+inventory-snapshot:
+  ttl-minutes: 3
+  tag-cooldown-seconds: 15
+  max-active-per-player: 3
+  gui-title: "<dark_aqua>Инвентарь <player></dark_aqua>"
+
+metrics:
+  enabled: true
+  bstats-id: 33354
+
+updates:
+  enabled: true
+  modrinth-project-id: ""
+  interval-hours: 24
+  timeout-millis: 8000

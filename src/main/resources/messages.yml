@@ -1,0 +1,17 @@
+prefix: "<gradient:#7CB342:#558B2F><b>mChat</b></gradient> <dark_gray>»</dark_gray> "
+
+common:
+  no-permission: "<red>У вас нет прав на эту команду."
+  player-only: "<red>Команда только для игроков."
+  reloaded: "<color:#7CB342>Конфиги перезагружены."
+  usage-reload: "<yellow>Использование: <white>/mchat reload"
+
+chat:
+  cooldown: "<red>Не флудите. Подождите <white><seconds></white> сек."
+  duplicate: "<red>Вы только что отправили это сообщение."
+
+private:
+  self-message: "<red>Нельзя писать самому себе."
+  target-offline: "<red>Игрок не в сети."
+  no-reply-target: "<red>Вам никто ещё не писал."
+  usage: "<yellow>Использование: <white>/m <ник> <сообщение>"

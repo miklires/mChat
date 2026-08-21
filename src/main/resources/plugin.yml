@@ -1,0 +1,62 @@
+name: mChat
+version: ${version}
+main: io.github.miklires.mchat.MChat
+api-version: '26.2'
+author: miklires
+description: Paper-native channels, interactive chat, and moderation tools
+softdepend: [LuckPerms, mAuth, mColor, PlaceholderAPI]
+
+commands:
+  msg:
+    description: Send a private message
+    usage: /msg <player> <message>
+    aliases: [m, tell, w, whisper]
+  reply:
+    description: Reply to last private message
+    usage: /reply <message>
+    aliases: [r]
+  global:
+    description: Send a message to global chat
+    usage: /global <message>
+    aliases: [g]
+  local:
+    description: Send a message to local chat
+    usage: /local
+  mchat:
+    description: Управление mChat
+    usage: /mchat [reload]
+
+permissions:
+  mchat.command.msg:
+    default: true
+  mchat.command.reply:
+    default: true
+  mchat.command.global:
+    default: true
+  mchat.command.local:
+    default: true
+  mchat.bypass.cooldown:
+    description: Bypass anti-spam cooldown
+    default: op
+  mchat.color:
+    description: Use color codes in messages
+    default: op
+  mchat.tag.xp:
+    default: true
+  mchat.tag.xyz:
+    default: true
+  mchat.tag.item:
+    default: true
+  mchat.tag.inventory:
+    default: true
+  mchat.tag.online:
+    default: true
+  mchat.tag.ping:
+    default: true
+  mchat.tag.tps:
+    default: true
+  mchat.admin:
+    default: op
+    children:
+      mchat.bypass.cooldown: true
+      mchat.color: true
