@@ -2,6 +2,10 @@ package io.github.miklires.mchat.config;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import io.github.miklires.mchat.MChat;
+import io.github.miklires.mchat.chat.ChatChannel;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class ConfigManager {
 
@@ -26,6 +30,26 @@ public class ConfigManager {
     public String getCooldownMessage() { return plugin.getMessageUtil().get("chat.cooldown"); }
     public boolean isBlockDuplicates() { return cfg().getBoolean("anti-spam.block-duplicates", true); }
     public String getDuplicateMessage() { return plugin.getMessageUtil().get("chat.duplicate"); }
+    public String getFilteredMessage() { return plugin.getMessageUtil().get("chat.filtered"); }
+
+    public Map<String, ChatChannel> getChannels() {
+        Map<String, ChatChannel> channels = new LinkedHashMap<>();
+        var root = cfg().getConfigurationSection("channels");
+        if (root == null) return channels;
+        for (String id : root.getKeys(false)) {
+            var section = root.getConfigurationSection(id);
+            if (section == null || !section.getBoolean("enabled", true)) continue;
+            channels.put(id, new ChatChannel(id,
+                    section.getString("format", "<player>: <message>"),
+                    Math.max(0, section.getInt("radius", 0)),
+                    section.getString("permission-read", ""),
+                    section.getString("permission-write", ""),
+                    Math.max(0, section.getInt("cooldown-seconds", 0)),
+                    section.getString("prefix-char", ""),
+                    section.getBoolean("log", true)));
+        }
+        return channels;
+    }
 
     public String getPrivateFormatSender() { return cfg().getString("private.format-sender"); }
     public String getPrivateFormatTarget() { return cfg().getString("private.format-target"); }

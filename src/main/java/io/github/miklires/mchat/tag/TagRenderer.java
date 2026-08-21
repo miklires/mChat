@@ -25,7 +25,9 @@ public class TagRenderer {
     public String renderTags(Player sender, String input) {
         Matcher m = TAG.matcher(input);
         StringBuilder out = new StringBuilder();
+        int previousEnd = 0;
         while (m.find()) {
+            out.append(escapeUserText(input.substring(previousEnd, m.start()), sender));
             String tag = m.group(1).toLowerCase();
             String replacement;
             if (!sender.hasPermission("mchat.tag." + tag)) {
@@ -42,10 +44,15 @@ public class TagRenderer {
                     default -> m.group(0);
                 };
             }
-            m.appendReplacement(out, Matcher.quoteReplacement(replacement));
+            out.append(replacement);
+            previousEnd = m.end();
         }
-        m.appendTail(out);
+        out.append(escapeUserText(input.substring(previousEnd), sender));
         return out.toString();
+    }
+
+    private String escapeUserText(String text, Player sender) {
+        return sender.hasPermission("mchat.format.minimessage") ? text : MiniMessage.miniMessage().escapeTags(text);
     }
 
     private String renderXp(Player p) {

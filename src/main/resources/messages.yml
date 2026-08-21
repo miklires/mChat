@@ -9,6 +9,7 @@ common:
 chat:
   cooldown: "<red>Не флудите. Подождите <white><seconds></white> сек."
   duplicate: "<red>Вы только что отправили это сообщение."
+  filtered: "<red>Сообщение заблокировано фильтром <white><filter></white>."
 
 private:
   self-message: "<red>Нельзя писать самому себе."

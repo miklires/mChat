@@ -22,21 +22,37 @@ public class MessageRouter {
     }
 
     public void routeChat(Player sender, String rawMessage) {
-        boolean global = rawMessage.startsWith("!");
-        String body = global ? rawMessage.substring(1).trim() : rawMessage.trim();
+        ChatChannel channel = selectChannel(rawMessage);
+        if (channel == null) return;
+        String body = channel.prefix().isEmpty()
+                ? rawMessage.trim() : rawMessage.substring(channel.prefix().length()).trim();
         if (body.isEmpty()) return;
-
-        sendChat(sender, body, global);
+        sendChat(sender, body, channel);
     }
 
     public void sendChat(Player sender, String body, boolean global) {
+        ChatChannel channel = plugin.getConfigManager().getChannels().get(global ? "global" : "local");
+        if (channel != null) sendChat(sender, body, channel);
+    }
+
+    public void sendChat(Player sender, String body, ChatChannel channel) {
+        if (!channel.writePermission().isBlank() && !sender.hasPermission(channel.writePermission())) {
+            sender.sendMessage(mm.deserialize(plugin.getMessageUtil().prefix()
+                    + plugin.getMessageUtil().get("common.no-permission")));
+            return;
+        }
+        ChatFilter.Result filtered = plugin.getChatFilter().check(body);
+        if (filtered.blocked()) {
+            sender.sendMessage(mm.deserialize(plugin.getConfigManager().getFilteredMessage()
+                    .replace("<filter>", filtered.filter())));
+            return;
+        }
+        body = filtered.message();
         String renderedBody = plugin.getTagRenderer().renderTags(sender, body);
         List<Player> mentioned = collectMentions(renderedBody);
         String highlighted = highlightedMessage(renderedBody, mentioned);
 
-        String template = global
-                ? plugin.getConfigManager().getGlobalFormat()
-                : plugin.getConfigManager().getChatFormat();
+        String template = channel.format();
 
         String coloredName = plugin.getColorProvider().getColoredName(sender);
 
@@ -55,7 +71,7 @@ public class MessageRouter {
 
         Component finalMessage = mm.deserialize(composed);
 
-        List<Player> recipients = recipientsFor(sender, global);
+        List<Player> recipients = recipientsFor(sender, channel);
         for (Player r : recipients) {
             r.sendMessage(finalMessage);
         }
@@ -64,26 +80,39 @@ public class MessageRouter {
         playMentionSounds(mentioned);
     }
 
-    private List<Player> recipientsFor(Player sender, boolean global) {
+    private ChatChannel selectChannel(String message) {
+        ChatChannel fallback = plugin.getConfigManager().getChannels().get("local");
+        for (ChatChannel channel : plugin.getConfigManager().getChannels().values()) {
+            if (!channel.prefix().isEmpty() && message.startsWith(channel.prefix())) return channel;
+            if (fallback == null) fallback = channel;
+        }
+        return fallback;
+    }
+
+    private List<Player> recipientsFor(Player sender, ChatChannel channel) {
         List<Player> result = new ArrayList<>();
         PlayerDirectory.Entry source = plugin.getPlayerDirectory().get(sender.getUniqueId());
         if (source == null) return result;
-        if (global) {
+        if (!channel.local()) {
             for (PlayerDirectory.Entry entry : plugin.getPlayerDirectory().entries()) {
-                if (!entry.player().equals(sender)) result.add(entry.player());
+                if (!entry.player().equals(sender) && canRead(entry.player(), channel)) result.add(entry.player());
             }
             return result;
         }
-        int radius = plugin.getConfigManager().getLocalRadius();
+        int radius = channel.radius();
         int radiusSq = radius * radius;
         for (PlayerDirectory.Entry entry : plugin.getPlayerDirectory().entries()) {
             if (entry.player().equals(sender)) continue;
             if (!entry.worldId().equals(source.worldId())) continue;
-            if (entry.distanceSquared(source) <= radiusSq) {
+            if (canRead(entry.player(), channel) && entry.distanceSquared(source) <= radiusSq) {
                 result.add(entry.player());
             }
         }
         return result;
+    }
+
+    private boolean canRead(Player player, ChatChannel channel) {
+        return channel.readPermission().isBlank() || player.hasPermission(channel.readPermission());
     }
 
     private List<Player> collectMentions(String body) {

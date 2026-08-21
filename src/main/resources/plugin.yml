@@ -21,6 +21,21 @@ permissions:
   mchat.color:
     description: Use color codes in messages
     default: op
+  mchat.format.minimessage:
+    description: Use MiniMessage formatting in chat
+    default: op
+  mchat.channel.local.read:
+    default: true
+  mchat.channel.local.write:
+    default: true
+  mchat.channel.global.read:
+    default: true
+  mchat.channel.global.write:
+    default: true
+  mchat.channel.staff.read:
+    default: op
+  mchat.channel.staff.write:
+    default: op
   mchat.tag.xp:
     default: true
   mchat.tag.xyz:

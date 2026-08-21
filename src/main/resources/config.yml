@@ -5,6 +5,7 @@ language:
 
 channels:
   local:
+    enabled: true
     format: "<color:#7CB342>[L]</color> <prefix><player><dark_gray>:</dark_gray> <message>"
     radius: 50
     permission-read: "mchat.channel.local.read"
@@ -15,6 +16,7 @@ channels:
     cross-server: false
     log: true
   global:
+    enabled: true
     format: "<gold>[G]</gold> <prefix><player><dark_gray>:</dark_gray> <message>"
     radius: 0
     permission-read: "mchat.channel.global.read"
@@ -25,6 +27,7 @@ channels:
     cross-server: false
     log: true
   staff:
+    enabled: true
     format: "<red>[Staff]</red> <prefix><player><dark_gray>:</dark_gray> <message>"
     radius: 0
     permission-read: "mchat.channel.staff.read"
@@ -37,6 +40,25 @@ channels:
 
 anti-spam:
   block-duplicates: true
+
+moderation:
+  enabled: true
+  caps:
+    action: block
+    min-letters: 8
+    max-ratio: 0.7
+  flood:
+    action: block
+    max-repeated-characters: 6
+  advertising:
+    enabled: true
+    action: block
+  zalgo:
+    action: block
+    max-combining-marks: 6
+  regex:
+    action: block
+    patterns: []
 
 private:
   format-sender: "<gray>[<dark_gray>you<gray>→<dark_aqua><target><gray>] <white><message>"

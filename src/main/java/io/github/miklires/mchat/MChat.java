@@ -5,6 +5,7 @@ import org.bstats.bukkit.Metrics;
 import io.github.miklires.mchat.chat.AntiSpamManager;
 import io.github.miklires.mchat.chat.ChatListener;
 import io.github.miklires.mchat.chat.MessageRouter;
+import io.github.miklires.mchat.chat.ChatFilter;
 import io.github.miklires.mchat.command.GlobalCommand;
 import io.github.miklires.mchat.command.LocalCommand;
 import io.github.miklires.mchat.command.MsgCommand;
@@ -34,6 +35,7 @@ public class MChat extends JavaPlugin {
     private io.github.miklires.mchat.join.MAuthHook mAuthHook;
     private io.github.miklires.mchat.color.ColorProvider colorProvider;
     private PlayerDirectory playerDirectory;
+    private ChatFilter chatFilter;
 
     @Override
     public void onEnable() {
@@ -42,6 +44,7 @@ public class MChat extends JavaPlugin {
         messageUtil = new io.github.miklires.mchat.util.MessageUtil(this);
         configManager = new ConfigManager(this);
         antiSpamManager = new AntiSpamManager(this);
+        chatFilter = new ChatFilter(this);
         inventorySnapshotManager = new InventorySnapshotManager(this);
         tagRenderer = new TagRenderer(this);
         prefixProvider = new io.github.miklires.mchat.prefix.PrefixProvider(this);
@@ -101,4 +104,5 @@ public class MChat extends JavaPlugin {
     public boolean isMAuthHooked() { return mAuthHook != null && mAuthHook.isHooked(); }
     public io.github.miklires.mchat.color.ColorProvider getColorProvider() { return colorProvider; }
     public PlayerDirectory getPlayerDirectory() { return playerDirectory; }
+    public ChatFilter getChatFilter() { return chatFilter; }
 }
