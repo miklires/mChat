@@ -6,26 +6,6 @@ author: miklires
 description: Paper-native channels, interactive chat, and moderation tools
 softdepend: [LuckPerms, mAuth, mColor, PlaceholderAPI]
 
-commands:
-  msg:
-    description: Send a private message
-    usage: /msg <player> <message>
-    aliases: [m, tell, w, whisper]
-  reply:
-    description: Reply to last private message
-    usage: /reply <message>
-    aliases: [r]
-  global:
-    description: Send a message to global chat
-    usage: /global <message>
-    aliases: [g]
-  local:
-    description: Send a message to local chat
-    usage: /local
-  mchat:
-    description: Управление mChat
-    usage: /mchat [reload]
-
 permissions:
   mchat.command.msg:
     default: true

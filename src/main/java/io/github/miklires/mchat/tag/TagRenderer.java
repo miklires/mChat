@@ -87,7 +87,7 @@ public class TagRenderer {
     }
 
     private String renderOnline() {
-        int online = Bukkit.getOnlinePlayers().size();
+        int online = plugin.getPlayerDirectory().entries().size();
         int max = Bukkit.getMaxPlayers();
         return plugin.getConfigManager().getTagOnline()
                 .replace("<online>", String.valueOf(online))

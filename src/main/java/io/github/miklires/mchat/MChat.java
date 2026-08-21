@@ -10,12 +10,15 @@ import io.github.miklires.mchat.command.LocalCommand;
 import io.github.miklires.mchat.command.MsgCommand;
 import io.github.miklires.mchat.command.MChatAdminCommand;
 import io.github.miklires.mchat.command.ReplyCommand;
+import io.github.miklires.mchat.command.PaperCommandAdapter;
 import io.github.miklires.mchat.config.ConfigManager;
 import io.github.miklires.mchat.inventory.InventorySnapshotManager;
 import io.github.miklires.mchat.inventory.InventoryViewCommand;
 import io.github.miklires.mchat.join.JoinQuitListener;
 import io.github.miklires.mchat.privatechat.PrivateMessageManager;
 import io.github.miklires.mchat.tag.TagRenderer;
+import io.github.miklires.mchat.player.PlayerDirectory;
+import java.util.List;
 
 public class MChat extends JavaPlugin {
 
@@ -30,6 +33,7 @@ public class MChat extends JavaPlugin {
     private JoinQuitListener joinQuitListener;
     private io.github.miklires.mchat.join.MAuthHook mAuthHook;
     private io.github.miklires.mchat.color.ColorProvider colorProvider;
+    private PlayerDirectory playerDirectory;
 
     @Override
     public void onEnable() {
@@ -43,10 +47,13 @@ public class MChat extends JavaPlugin {
         prefixProvider = new io.github.miklires.mchat.prefix.PrefixProvider(this);
         messageRouter = new MessageRouter(this);
         privateMessageManager = new PrivateMessageManager(this);
+        playerDirectory = new PlayerDirectory();
+        getServer().getOnlinePlayers().forEach(playerDirectory::track);
 
         joinQuitListener = new JoinQuitListener(this);
         getServer().getPluginManager().registerEvents(new ChatListener(this), this);
         getServer().getPluginManager().registerEvents(joinQuitListener, this);
+        getServer().getPluginManager().registerEvents(playerDirectory, this);
         getServer().getPluginManager().registerEvents(
                 new io.github.miklires.mchat.inventory.SnapshotProtectionListener(), this);
 
@@ -61,17 +68,18 @@ public class MChat extends JavaPlugin {
             if (bstatsId > 0) new Metrics(this, bstatsId);
         }
 
-        getCommand("msg").setExecutor(new MsgCommand(this));
-        getCommand("reply").setExecutor(new ReplyCommand(this));
-        getCommand("global").setExecutor(new GlobalCommand(this));
-        getCommand("local").setExecutor(new LocalCommand(this));
-        getCommand("mchat").setExecutor(new MChatAdminCommand(this));
-
-        getServer().getCommandMap().register("mchat", new InventoryViewCommand(this));
-
-        getServer().getScheduler().runTaskTimer(this,
-                () -> inventorySnapshotManager.purgeExpired(),
-                20L * 60L, 20L * 60L);
+        registerCommand("msg", "Send a private message", List.of("m", "tell", "w", "whisper"),
+                new PaperCommandAdapter("msg", new MsgCommand(this)));
+        registerCommand("reply", "Reply to the last private message", List.of("r"),
+                new PaperCommandAdapter("reply", new ReplyCommand(this)));
+        registerCommand("global", "Send a message to global chat", List.of("g"),
+                new PaperCommandAdapter("global", new GlobalCommand(this)));
+        registerCommand("local", "Send a message to local chat", List.of("l"),
+                new PaperCommandAdapter("local", new LocalCommand(this)));
+        registerCommand("mchat", "Manage mChat", List.of(),
+                new PaperCommandAdapter("mchat", new MChatAdminCommand(this)));
+        registerCommand("mchat-inv", "View an inventory snapshot", List.of(),
+                new PaperCommandAdapter("mchat-inv", new InventoryViewCommand(this)));
 
         getLogger().info("mChat enabled.");
     }
@@ -92,4 +100,5 @@ public class MChat extends JavaPlugin {
     public JoinQuitListener getJoinQuitListener() { return joinQuitListener; }
     public boolean isMAuthHooked() { return mAuthHook != null && mAuthHook.isHooked(); }
     public io.github.miklires.mchat.color.ColorProvider getColorProvider() { return colorProvider; }
+    public PlayerDirectory getPlayerDirectory() { return playerDirectory; }
 }

@@ -6,6 +6,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import io.github.miklires.mchat.MChat;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,24 +16,38 @@ public class InventorySnapshotManager {
 
     private final MChat plugin;
     private final Map<String, Snapshot> snapshots = new ConcurrentHashMap<>();
-    private final Map<UUID, String> latestByPlayer = new ConcurrentHashMap<>();
+    private final Map<UUID, Deque<String>> byPlayer = new ConcurrentHashMap<>();
+    private final Map<UUID, Long> lastCreated = new ConcurrentHashMap<>();
 
     public InventorySnapshotManager(MChat plugin) {
         this.plugin = plugin;
     }
 
     public String createSnapshot(Player player) {
+        long now = System.currentTimeMillis();
+        long cooldown = plugin.getConfigManager().getSnapshotTagCooldownSeconds() * 1_000L;
+        Long previousCreation = lastCreated.get(player.getUniqueId());
+        Deque<String> playerSnapshots = byPlayer.computeIfAbsent(player.getUniqueId(), ignored -> new ArrayDeque<>());
+        synchronized (playerSnapshots) {
+            if (previousCreation != null && now - previousCreation < cooldown && !playerSnapshots.isEmpty()) {
+                return playerSnapshots.peekLast();
+            }
+        }
+
         ItemStack[] main = clone(player.getInventory().getStorageContents());
         ItemStack[] armor = clone(player.getInventory().getArmorContents());
         ItemStack offhand = player.getInventory().getItemInOffHand() != null
                 ? player.getInventory().getItemInOffHand().clone() : null;
 
-        String previous = latestByPlayer.get(player.getUniqueId());
-        if (previous != null) snapshots.remove(previous);
-
         String id = randomId();
-        snapshots.put(id, new Snapshot(player.getName(), main, armor, offhand, System.currentTimeMillis()));
-        latestByPlayer.put(player.getUniqueId(), id);
+        snapshots.put(id, new Snapshot(player.getName(), main, armor, offhand, now));
+        lastCreated.put(player.getUniqueId(), now);
+        synchronized (playerSnapshots) {
+            playerSnapshots.addLast(id);
+            while (playerSnapshots.size() > plugin.getConfigManager().getMaxSnapshotsPerPlayer()) {
+                snapshots.remove(playerSnapshots.removeFirst());
+            }
+        }
         return id;
     }
 
@@ -73,6 +89,11 @@ public class InventorySnapshotManager {
         long ttlMs = plugin.getConfigManager().getSnapshotTtlMinutes() * 60_000L;
         long now = System.currentTimeMillis();
         snapshots.entrySet().removeIf(e -> now - e.getValue().createdAt > ttlMs);
+        byPlayer.values().forEach(ids -> {
+            synchronized (ids) {
+                ids.removeIf(id -> !snapshots.containsKey(id));
+            }
+        });
     }
 
     private ItemStack[] clone(ItemStack[] src) {

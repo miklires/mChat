@@ -2,24 +2,23 @@ package io.github.miklires.mchat.inventory;
 
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import io.github.miklires.mchat.MChat;
 
-public class InventoryViewCommand extends Command {
+public class InventoryViewCommand implements CommandExecutor {
 
     private final MChat plugin;
 
     public InventoryViewCommand(MChat plugin) {
-        super("mchat-inv");
         this.plugin = plugin;
-        setDescription("View inventory snapshot");
-        setUsage("/mchat-inv <id>");
     }
 
     @Override
-    public boolean execute(@NotNull CommandSender sender, @NotNull String label, @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command,
+                             @NotNull String label, @NotNull String[] args) {
         if (!(sender instanceof Player player)) return true;
         if (args.length < 1) {
             player.sendMessage(MiniMessage.miniMessage().deserialize("<red>Использование: /mchat-inv <id>"));

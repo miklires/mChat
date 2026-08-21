@@ -63,5 +63,7 @@ public class ConfigManager {
     public String getTpsBadColor() { return cfg().getString("tags.tps-bad"); }
 
     public int getSnapshotTtlMinutes() { return cfg().getInt("inventory-snapshot.ttl-minutes", 60); }
+    public int getSnapshotTagCooldownSeconds() { return cfg().getInt("inventory-snapshot.tag-cooldown-seconds", 15); }
+    public int getMaxSnapshotsPerPlayer() { return Math.max(1, cfg().getInt("inventory-snapshot.max-active-per-player", 3)); }
     public String getSnapshotGuiTitle() { return cfg().getString("inventory-snapshot.gui-title"); }
 }

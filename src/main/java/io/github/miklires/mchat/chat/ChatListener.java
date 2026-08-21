@@ -38,7 +38,6 @@ public class ChatListener implements Listener {
 
         event.setCancelled(true);
 
-        plugin.getServer().getScheduler().runTask(plugin, () ->
-                plugin.getMessageRouter().routeChat(player, raw));
+        plugin.getMessageRouter().routeChat(player, raw);
     }
 }

@@ -2,10 +2,10 @@ package io.github.miklires.mchat.chat;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import io.github.miklires.mchat.MChat;
+import io.github.miklires.mchat.player.PlayerDirectory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,19 +66,21 @@ public class MessageRouter {
 
     private List<Player> recipientsFor(Player sender, boolean global) {
         List<Player> result = new ArrayList<>();
+        PlayerDirectory.Entry source = plugin.getPlayerDirectory().get(sender.getUniqueId());
+        if (source == null) return result;
         if (global) {
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                if (!p.equals(sender)) result.add(p);
+            for (PlayerDirectory.Entry entry : plugin.getPlayerDirectory().entries()) {
+                if (!entry.player().equals(sender)) result.add(entry.player());
             }
             return result;
         }
         int radius = plugin.getConfigManager().getLocalRadius();
         int radiusSq = radius * radius;
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if (p.equals(sender)) continue;
-            if (!p.getWorld().equals(sender.getWorld())) continue;
-            if (p.getLocation().distanceSquared(sender.getLocation()) <= radiusSq) {
-                result.add(p);
+        for (PlayerDirectory.Entry entry : plugin.getPlayerDirectory().entries()) {
+            if (entry.player().equals(sender)) continue;
+            if (!entry.worldId().equals(source.worldId())) continue;
+            if (entry.distanceSquared(source) <= radiusSq) {
+                result.add(entry.player());
             }
         }
         return result;
@@ -91,7 +93,7 @@ public class MessageRouter {
         Pattern p = Pattern.compile(Pattern.quote(symbol) + "([a-zA-Z0-9_]{3,16})");
         Matcher m = p.matcher(body);
         while (m.find()) {
-            Player target = Bukkit.getPlayerExact(m.group(1));
+            Player target = plugin.getPlayerDirectory().findExact(m.group(1));
             if (target != null && !result.contains(target)) result.add(target);
         }
         return result;
