@@ -95,7 +95,7 @@ public class MessageRouter {
         if (source == null) return result;
         if (!channel.local()) {
             for (PlayerDirectory.Entry entry : plugin.getPlayerDirectory().entries()) {
-                if (!entry.player().equals(sender) && canRead(entry.player(), channel)) result.add(entry.player());
+                if (!entry.player().equals(sender) && canRead(entry.player(), sender, channel)) result.add(entry.player());
             }
             return result;
         }
@@ -104,14 +104,15 @@ public class MessageRouter {
         for (PlayerDirectory.Entry entry : plugin.getPlayerDirectory().entries()) {
             if (entry.player().equals(sender)) continue;
             if (!entry.worldId().equals(source.worldId())) continue;
-            if (canRead(entry.player(), channel) && entry.distanceSquared(source) <= radiusSq) {
+            if (canRead(entry.player(), sender, channel) && entry.distanceSquared(source) <= radiusSq) {
                 result.add(entry.player());
             }
         }
         return result;
     }
 
-    private boolean canRead(Player player, ChatChannel channel) {
+    private boolean canRead(Player player, Player sender, ChatChannel channel) {
+        if (plugin.getSocialManager().ignores(player.getUniqueId(), sender.getUniqueId())) return false;
         return channel.readPermission().isBlank() || player.hasPermission(channel.readPermission());
     }
 

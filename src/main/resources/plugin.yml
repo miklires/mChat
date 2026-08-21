@@ -36,6 +36,13 @@ permissions:
     default: op
   mchat.channel.staff.write:
     default: op
+  mchat.command.ignore:
+    default: true
+  mchat.command.ignorelist:
+    default: true
+  mchat.socialspy:
+    description: View private messages while social spy is enabled
+    default: op
   mchat.tag.xp:
     default: true
   mchat.tag.xyz:
