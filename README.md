@@ -9,6 +9,7 @@
 
   <p>
     <a href="https://github.com/miklires/mChat"><img alt="GitHub" src="https://tr7zw.github.io/uikit/social_buttons_icon/Github-Button-64.png"></a>
+    <a href="https://modrinth.com/plugin/mchat"><img alt="Modrinth" src="https://tr7zw.github.io/uikit/social_buttons_icon/Modrinth-Button-64.png"></a>
   </p>
 
   <p>
@@ -17,9 +18,16 @@
   </p>
 </div>
 
-## Development status
+## Features
 
-mChat is being rebuilt for its first public release. The current private development build includes local and global chat, private messages, interactive tags, mentions, LuckPerms prefixes, and configurable channel definitions. Moderation filters, ignore/socialspy, signed-message deletion, storage, and Folia verification are still in progress and are not advertised as released features.
+- Configuration-driven local, global, and staff channels
+- Per-channel radius, format, prefix, cooldown, and read/write permissions
+- Interactive `[item]`, `[inventory]`, `[xyz]`, `[xp]`, `[ping]`, `[tps]`, and `[online]` tags
+- Private messages, replies, mentions, ignore lists, and staff social spy
+- Caps, flood, advertising, Zalgo, and custom regex filters
+- MiniMessage formatting guarded by permissions
+- LuckPerms prefixes and optional PlaceholderAPI integration
+- Bounded inventory snapshots with cooldown and expiry
 
 ## Requirements
 
@@ -32,11 +40,10 @@ mChat is being rebuilt for its first public release. The current private develop
 ./gradlew clean build
 ```
 
-The development JAR is written to `build/libs/mChat-1.0.0.jar`.
+The JAR is written to `build/libs/mChat-1.0.0.jar`.
 
 ## Telemetry and updates
 
-mChat uses [bStats plugin ID 33354](https://bstats.org/plugin/bukkit/mChat/33354) for anonymous usage statistics. Disable it with `metrics.enabled: false`. Update checks are configured separately under `updates` and remain inactive until the Modrinth project exists.
+mChat uses [bStats plugin ID 33354](https://bstats.org/plugin/bukkit/mChat/33354) for anonymous usage statistics. Disable it with `metrics.enabled: false`.
 
 Licensed under the MIT License.
-

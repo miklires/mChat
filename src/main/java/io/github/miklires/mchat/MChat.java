@@ -12,6 +12,9 @@ import io.github.miklires.mchat.command.MsgCommand;
 import io.github.miklires.mchat.command.MChatAdminCommand;
 import io.github.miklires.mchat.command.ReplyCommand;
 import io.github.miklires.mchat.command.PaperCommandAdapter;
+import io.github.miklires.mchat.command.IgnoreCommand;
+import io.github.miklires.mchat.command.IgnoreListCommand;
+import io.github.miklires.mchat.command.SocialSpyCommand;
 import io.github.miklires.mchat.config.ConfigManager;
 import io.github.miklires.mchat.inventory.InventorySnapshotManager;
 import io.github.miklires.mchat.inventory.InventoryViewCommand;
@@ -20,6 +23,7 @@ import io.github.miklires.mchat.privatechat.PrivateMessageManager;
 import io.github.miklires.mchat.tag.TagRenderer;
 import io.github.miklires.mchat.player.PlayerDirectory;
 import java.util.List;
+import io.github.miklires.mchat.social.SocialManager;
 
 public class MChat extends JavaPlugin {
 
@@ -36,6 +40,7 @@ public class MChat extends JavaPlugin {
     private io.github.miklires.mchat.color.ColorProvider colorProvider;
     private PlayerDirectory playerDirectory;
     private ChatFilter chatFilter;
+    private SocialManager socialManager;
 
     @Override
     public void onEnable() {
@@ -45,6 +50,7 @@ public class MChat extends JavaPlugin {
         configManager = new ConfigManager(this);
         antiSpamManager = new AntiSpamManager(this);
         chatFilter = new ChatFilter(this);
+        socialManager = new SocialManager(this);
         inventorySnapshotManager = new InventorySnapshotManager(this);
         tagRenderer = new TagRenderer(this);
         prefixProvider = new io.github.miklires.mchat.prefix.PrefixProvider(this);
@@ -83,6 +89,12 @@ public class MChat extends JavaPlugin {
                 new PaperCommandAdapter("mchat", new MChatAdminCommand(this)));
         registerCommand("mchat-inv", "View an inventory snapshot", List.of(),
                 new PaperCommandAdapter("mchat-inv", new InventoryViewCommand(this)));
+        registerCommand("ignore", "Toggle messages from a player", List.of(),
+                new PaperCommandAdapter("ignore", new IgnoreCommand(this)));
+        registerCommand("ignorelist", "Show ignored players", List.of(),
+                new PaperCommandAdapter("ignorelist", new IgnoreListCommand(this)));
+        registerCommand("socialspy", "Toggle private-message spy", List.of(),
+                new PaperCommandAdapter("socialspy", new SocialSpyCommand(this)));
 
         getLogger().info("mChat enabled.");
     }
@@ -105,4 +117,5 @@ public class MChat extends JavaPlugin {
     public io.github.miklires.mchat.color.ColorProvider getColorProvider() { return colorProvider; }
     public PlayerDirectory getPlayerDirectory() { return playerDirectory; }
     public ChatFilter getChatFilter() { return chatFilter; }
+    public SocialManager getSocialManager() { return socialManager; }
 }
