@@ -50,12 +50,30 @@ jobs:
             license_id: "MIT",
             source_url: "https://github.com/miklires/mChat",
             issues_url: "https://github.com/miklires/mChat/issues",
+            wiki_url: "https://miklires.su/wiki/mchat",
+            discord_url: "https://discord.gg/pes25cnWKy",
+            donation_urls: [{id: "other", platform: "Other", url: "https://miklires.su/support"}],
             requested_status: "approved"
           }' | curl --fail-with-body --request PATCH \
             --header "Authorization: $MODRINTH_TOKEN" \
             --header "Content-Type: application/json" \
             --data-binary @- \
             "https://api.modrinth.com/v2/project/$MODRINTH_PROJECT_ID"
-      - run: gh release create "v1.0.0" build/libs/mChat-1.0.0.jar --verify-tag --title "v1.0.0" --notes-file CHANGELOG.md
+          jq -n '{set: [{type: "telemetry", consent: "opt_out", data_collected: ["https://bstats.org/docs/server-owners"]}], remove: []}' \
+            | curl --fail-with-body --request PATCH \
+              --header "Authorization: $MODRINTH_TOKEN" \
+              --header "Content-Type: application/json" \
+              --data-binary @- \
+              "https://api.modrinth.com/v3/project/$MODRINTH_PROJECT_ID/disclosures"
+          curl --fail-with-body --silent \
+            --header "Authorization: $MODRINTH_TOKEN" \
+            "https://api.modrinth.com/v2/project/$MODRINTH_PROJECT_ID" \
+            | jq '{id, slug, status, requested_status, source_url, issues_url, wiki_url, discord_url, donation_urls}'
+          curl --fail-with-body --silent \
+            --header "Authorization: $MODRINTH_TOKEN" \
+            "https://api.modrinth.com/v3/project/$MODRINTH_PROJECT_ID/disclosures" \
+            | jq '.disclosures | map({type, consent, data_collected})'
+      - name: Create GitHub release if missing
+        run: gh release view "v1.0.0" >/dev/null 2>&1 || gh release create "v1.0.0" build/libs/mChat-1.0.0.jar --verify-tag --title "v1.0.0" --notes-file CHANGELOG.md
         env:
           GH_TOKEN: ${{ github.token }}
