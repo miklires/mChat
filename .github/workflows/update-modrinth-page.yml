@@ -19,7 +19,7 @@ jobs:
           SUMMARY: 'Paper-native chat channels with interactive messages and moderation controls.'
           CATEGORIES: '["management","social"]'
           ADDITIONAL_CATEGORIES: '["utility"]'
-          PLATFORMS: 'paper,purpur,folia'
+          PLATFORMS: 'paper,purpur'
           BSTATS_ID: '33354'
           LICENSE_ID: 'MIT'
           LICENSE_URL: 'https://github.com/miklires/mChat/blob/main/LICENSE'
@@ -64,7 +64,6 @@ jobs:
           platforms = {
               "paper": ("https://papermc.io/software/paper", "Paper", "https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/supported/paper_vector.svg"),
               "purpur": ("https://purpurmc.org", "Purpur", "https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/supported/purpur_vector.svg"),
-              "folia": ("https://papermc.io/software/folia", "Folia", "https://raw.githubusercontent.com/miklires/mBadges/main/docs/assets/folia-available.png"),
               "velocity": ("https://papermc.io/software/velocity", "Velocity", "https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/supported/velocity_vector.svg"),
               "fabric": ("https://fabricmc.net", "Fabric", "https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/supported/fabric_vector.svg"),
           }
