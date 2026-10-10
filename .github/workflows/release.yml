@@ -56,6 +56,6 @@ jobs:
             --header "Content-Type: application/json" \
             --data-binary @- \
             "https://api.modrinth.com/v2/project/$MODRINTH_PROJECT_ID"
-      - run: gh release create "v1.0.0" build/libs/mChat-1.0.0.jar --verify-tag --title "v1.0.0" --notes-file CHANGELOG.md
+      - run: gh release create "v1.0.1" build/libs/mChat-1.0.1.jar --verify-tag --title "v1.0.1" --notes-file CHANGELOG.md
         env:
           GH_TOKEN: ${{ github.token }}
