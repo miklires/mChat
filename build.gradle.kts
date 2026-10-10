@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "io.github.miklires"
-version = "1.0.0"
+version = "1.0.1"
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(25))
@@ -18,7 +18,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:26.2.build.112-stable")
+    compileOnly("io.papermc.paper:paper-api:26.3.build.169-beta")
     compileOnly("net.luckperms:api:5.4")
     compileOnly("me.clip:placeholderapi:2.12.3")
     implementation("org.bstats:bstats-bukkit:3.1.0")
@@ -55,7 +55,7 @@ modrinth {
     versionName.set("mChat ${project.version}")
     versionType.set("release")
     uploadFile.set(tasks.shadowJar)
-    gameVersions.add("26.2")
+    gameVersions.add("26.3")
     loaders.addAll("paper", "purpur")
     changelog.set(provider { file("CHANGELOG.md").takeIf { it.exists() }?.readText() ?: "" })
     syncBodyFrom.set(provider { file("README.md").takeIf { it.exists() }?.readText() ?: "" })

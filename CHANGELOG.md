@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.1 - 2026-10-10
+
+- Added Minecraft 26.3 compatibility and verified the clean build and automated test suite against Paper API 26.3.
+
 ## 1.0.0 - 2026-08-21
 
 ### Added

@@ -1,7 +1,7 @@
 name: mChat
 version: ${version}
 main: io.github.miklires.mchat.MChat
-api-version: '26.2'
+api-version: '26.3'
 author: miklires
 description: Paper-native channels, interactive chat, and moderation tools
 softdepend: [LuckPerms, mAuth, mColor, PlaceholderAPI]

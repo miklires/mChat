@@ -32,7 +32,7 @@
 ## Requirements
 
 - Java 25
-- Paper or Purpur 26.2
+- Paper or Purpur 26.3
 
 ## Build
 
