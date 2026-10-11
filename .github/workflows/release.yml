@@ -56,6 +56,18 @@ jobs:
             --header "Content-Type: application/json" \
             --data-binary @- \
             "https://api.modrinth.com/v2/project/$MODRINTH_PROJECT_ID"
-      - run: gh release create "v1.0.1" build/libs/mChat-1.0.1.jar --verify-tag --title "v1.0.1" --notes-file CHANGELOG.md
+      - name: Create or refresh GitHub release
+        if: github.event_name == 'push'
+        shell: bash
+        run: |
+          set -euo pipefail
+          tag="$GITHUB_REF_NAME"
+          version="${tag#v}"
+          artifact="build/libs/mChat-${version}.jar"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            gh release upload "$tag" "$artifact" --clobber
+          else
+            gh release create "$tag" "$artifact" --verify-tag --title "$tag" --notes-file CHANGELOG.md
+          fi
         env:
           GH_TOKEN: ${{ github.token }}

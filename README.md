@@ -40,7 +40,7 @@
 ./gradlew clean build
 ```
 
-The JAR is written to `build/libs/mChat-1.0.0.jar`.
+The JAR is written to `build/libs/mChat-1.0.1.jar`.
 
 ## Telemetry and updates
 
